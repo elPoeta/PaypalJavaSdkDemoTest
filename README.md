@@ -1,7 +1,7 @@
 # PaypalJavaSdkDemoTest
 Test demo medio de pago PayPal utilizando Java SDK y paypal rest API 
 
-    #### Api Context
+#### Api Context
      
               Creamos un contexto para autenticar
               la llamada genera un id unico
@@ -10,7 +10,7 @@ Test demo medio de pago PayPal utilizando Java SDK y paypal rest API
              
                 APIContext apiContext = new APIContext(CLIENTE_ID, CLIENTE_SECRET, MODO);
             
-    #### Ejecucion de pago
+#### Ejecucion de pago
                 
                 Payment payment = new Payment();
           
@@ -23,121 +23,121 @@ Test demo medio de pago PayPal utilizando Java SDK y paypal rest API
                 createdPayment = payment.execute(apiContext, paymentExecution);
                
               
-    #### Creacion de Pago
+#### Creacion de Pago
                 
-                 ### Details
-                    
-                      * Se especifican detalles de los montos a pagar.
-                    
-                         Details details = new Details();
-                         details.setShipping("1");
-                         details.setSubtotal("5.00");
-                         details.setTax("1");
+* Details
 
-                 ### Amount
+    * Se especifican detalles de los montos a pagar.
+                    
+        Details details = new Details();
+        details.setShipping("1");
+        details.setSubtotal("5.00");
+        details.setTax("1");
+
+### Amount
                 
-                     * Se especifica el monto de pago.
+* Se especifica el monto de pago.
                      
-                         Amount amount = new Amount();
-                         amount.setCurrency("USD");
+    Amount amount = new Amount();
+    amount.setCurrency("USD");
                     
-                     * El total debe ser igual a la suma de shipping, tax y subtotal.
+* El total debe ser igual a la suma de shipping, tax y subtotal.
                      
-                         amount.setTotal("5.00");
-                         amount.setDetails(details);
+    amount.setTotal("5.00");
+    amount.setDetails(details);
 
-                 ### Transaction
+### Transaction
                  
-                    * Una transaction define el contrato  de
-                      pago - para que es el pago y para quien
-                      la transaccion es creada con un 
-                      `Payer` y un  `Amount` tipos de datos
+* Una transaction define el contrato  de
+    pago - para que es el pago y para quien
+    la transaccion es creada con un 
+    `Payer` y un  `Amount` tipos de datos
                    
-                         Transaction transaction = new Transaction();
-                         transaction.setAmount(amount);
-                         transaction.setDescription("Esta es una descripcion.");
+    Transaction transaction = new Transaction();
+    transaction.setAmount(amount);
+    transaction.setDescription("Esta es una descripcion.");
 
-                 ### Items
+### Items
                 
-                     * Detalles de cada item
+* Detalles de cada item
                 
-                         Item item = new Item();
-                         item.setName("Item de compra");
-                         item.setQuantity("1");
-                         item.setCurrency("USD");
-                         item.setPrice("5.00");
+    Item item = new Item();
+    item.setName("Item de compra");
+    item.setQuantity("1");
+    item.setCurrency("USD");
+    item.setPrice("5.00");
                 
-                         ItemList itemList = new ItemList();
-                         List<Item> items = new ArrayList<Item>();
-                         items.add(item);
-                         itemList.setItems(items);
+    ItemList itemList = new ItemList();
+    List<Item> items = new ArrayList<Item>();
+    items.add(item);
+    itemList.setItems(items);
 
-                         transaction.setItemList(itemList);
+    transaction.setItemList(itemList);
 
 
-                     * La API de creacion de pagos requiere una lista de
-                       Transacciones; agregar la `Transaction` creada
-                       a la lista
+* La API de creacion de pagos requiere una lista de
+    Transacciones; agregar la `Transaction` creada
+    a la lista
                 
-                         List<Transaction> transactions = new ArrayList();
-                         transactions.add(transaction);
+    List<Transaction> transactions = new ArrayList();
+    transactions.add(transaction);
 
-                 ### Payer
+### Payer
                 
-                     * Un recurso que representa un Pagador que financia un pago
-                       Definir el Payment Method
-                       como 'paypal'
+* Un recurso que representa un Pagador que financia un pago
+    Definir el Payment Method
+    como 'paypal'
                 
-                         Payer payer = new Payer();
-                         payer.setPaymentMethod("paypal");
+    Payer payer = new Payer();
+    payer.setPaymentMethod("paypal");
 
-                 ### Payment
+### Payment
                 
-                     * Es un recurso de pago; crear uno usando
-                     los tipos anteriores y agregar 'sale' 
+* Es un recurso de pago; crear uno usando
+los tipos anteriores y agregar 'sale' 
                
-                         Payment payment = new Payment();
-                         payment.setIntent("sale");
-                         payment.setPayer(payer);
-                         payment.setTransactions(transactions);
+    Payment payment = new Payment();
+    payment.setIntent("sale");
+    payment.setPayer(payer);
+    payment.setTransactions(transactions);
 
-                 ### Redirect URLs
+### Redirect URLs
                     
-                     * Proporcionar urls de retorno para
-                       cancelacion y exito de pago.
+* Proporcionar urls de retorno para
+cancelacion y exito de pago.
                  
-                         RedirectUrls redirectUrls = new RedirectUrls();
+    RedirectUrls redirectUrls = new RedirectUrls();
                 
-                         redirectUrls.setCancelUrl(req.getScheme() + "://"
-                         + req.getServerName() + ":" + req.getServerPort()
-                         + req.getContextPath() + "/");
+    redirectUrls.setCancelUrl(req.getScheme() + "://"
+    + req.getServerName() + ":" + req.getServerPort()
+    + req.getContextPath() + "/");
                      
-                         redirectUrls.setReturnUrl(req.getScheme() + "://"
-                         + req.getServerName() + ":" + req.getServerPort()
-                         + req.getContextPath() + "/");
+    redirectUrls.setReturnUrl(req.getScheme() + "://"
+    + req.getServerName() + ":" + req.getServerPort()
+    + req.getContextPath() + "/");
                      
-                         payment.setRedirectUrls(redirectUrls);
+    payment.setRedirectUrls(redirectUrls);
                  
-                 ### APIService
+### APIService
                   
-                     * Crear el pago con la APIService
-                       usar un token valido de acceso 'AccessToken'
-                       Retorna un objeto que contiene el status de la operacion
-                         try {
-                              createdPayment = payment.create(apiContext);
-                              System.out.println("Crea pago con id = "
-                              + createdPayment.getId() + " y status = "
-                              + createdPayment.getState());
+* Crear el pago con la APIService
+usar un token valido de acceso 'AccessToken'
+Retorna un objeto que contiene el status de la operacion
+                         
+    try {
+        createdPayment = payment.create(apiContext);
+        System.out.println("Crea pago con id = "
+        + createdPayment.getId() + " y status = "
+        + createdPayment.getState());
                 
-                        ###Payment Approval Url
+   * Payment Approval Url
 
-                             Iterator<Links> links = createdPayment.getLinks().iterator();
-                             while (links.hasNext()) {
-                                Links link = links.next();
-                                if (link.getRel().equalsIgnoreCase("approval_url")) {
-                                     req.setAttribute("redirectURL", link.getHref());
+         Iterator<Links> links = createdPayment.getLinks().iterator();
+         while (links.hasNext()) {
+         Links link = links.next();
+         if (link.getRel().equalsIgnoreCase("approval_url")) {                                     req.setAttribute("redirectURL", link.getHref());
                                  }
                              }
 
-                 ### Para finalizar retornamos un Payment                           
+### Para finalizar retornamos un Payment                           
 
