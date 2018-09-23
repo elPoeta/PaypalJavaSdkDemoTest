@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Paypal Java SDK Demo Test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <link rel="stylesheet" href="static/css/estilos.css">
+         <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+    </head>
+    <body>
+        <section class="container">
+            <h1>Paypal Java SDK Demo Test</h1>
+            <h3>Test Button</h3>
+            <div id="paypal-button"></div>
+            <div id="panel-mensajes"></div>
+        </section>
+        
+           
+     <script> 
+    const URL_PAYPAL_SERVER = 'PaypalServer'; 
+    paypal.Button.render({   
+       
+    env: 'sandbox', // O 'production'
+    
+    style: {
+            label: 'pay', // checkout | credit | buynow | paypal
+            size:  'responsive', // small | medium | large | responsive
+            shape: 'pill',   // pill | rect
+            color: 'gold'   // gold | blue | silver | black
+        },
+    // Set up payment:
+    // 1.  Agregar payment callback
+    commit: true,
+    payment: function(data, actions) {
+      // 2. Pedir request al server
+      console.log('request'+data);
+      return actions.request.post(URL_PAYPAL_SERVER)
+        .then(function(res) {
+          // 3. Return res.id desde response
+       console.log('response');
+          return res.id;
+        });
+    },
+    // Ejecutar el payment:
+    // 1. Agregar onAuthorize callback
+    onAuthorize: function(data, actions) {
+      // 2. Pedir request al server
+      return actions.request.post(URL_PAYPAL_SERVER, {
+        paymentID: data.paymentID,
+        payerID:   data.payerID
+      })
+        .then(function(res) {
+          console.log(res);
+         document.querySelector('#paypal-button').innerText = 'Gracias por su compra'; 
+         document.querySelector('#panel-mensajes').innerHTML = 'Pago Completado!';
+          
+        });
+    },
+    
+    onCancel: function (data, actions) {
+            console.log("CANCEL!! ");
+          return actions.redirect();
+        },
+    onError: function (error) {
+         console.log("ERROR! ",error);
+          
+        return alert("ERROR! "+error);
+        }
+  }, '#paypal-button');
+
+ </script>
+
+    </body>
+</html>
